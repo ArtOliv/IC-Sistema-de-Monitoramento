@@ -93,6 +93,14 @@ tipos = st.sidebar.multiselect(
     sorted(meta_df["tipo"].unique())
 )
 
+# Filtro para média dos sensores
+ids = sorted(meta_df["id"].unique())
+
+media_ids = st.sidebar.multiselect(
+    "Cálculo da média dos sensores (ID)",
+    ids
+)
+
 colunas_filtradas = meta_df.copy()
 
 if(tipos):
@@ -101,14 +109,26 @@ if(tipos):
 colunas_plot = colunas_filtradas["coluna"].tolist()
 
 # Prapara dados e plota o gráfico na interface
-df_long = df.melt(
-    id_vars="timestamp",
-    value_vars=colunas_plot,
-    var_name="sensor",
-    value_name="valor"
-)
+if media_ids: # Se média como filtro, ocupa o gŕafico
+    colunas_media = meta_df[meta_df["id"].isin(media_ids)]["coluna"].tolist()
 
-df_long = df_long.sort_values(["sensor", "timestamp"])
+    df_media = df[["timestamp"] + colunas_media].copy()
+
+    df_media["valor"] = df_media[colunas_media].mean(axis=1)
+
+    df_long = df_media[["timestamp", "valor"]].copy()
+    
+    ids_formatados = ", ".join(str(int(i)) for i in media_ids)
+    df_long.loc[:, "sensor"] = f"Média sensores ({ids_formatados})"
+else: # Se não, valores capturados das leituras
+    df_long = df.melt(
+        id_vars="timestamp",
+        value_vars=colunas_plot,
+        var_name="sensor",
+        value_name="valor"
+    )
+
+    df_long = df_long.sort_values(["sensor", "timestamp"])
 
 if(df_long.empty):
     st.warning("Nenhum dado disponível para os filtros selecionados.")
