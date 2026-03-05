@@ -13,7 +13,7 @@ O sistema realiza a medição contínua de:
 - **Umidade do solo**
 - **Luminosidade**
 
-Além da visualização em tempo real via navegador, o projeto inclui um coletor automatizado em **Python**, responsável por extrair periodicamente os dados do servidor web e armazená-los em formato **CSV** para análises futuras.
+Além da visualização em tempo real via navegador, o projeto inclui um coletor automatizado em **Python**, responsável por extrair periodicamente os dados do servidor web e armazená-los em formato **CSV** para análises futuras, e um **Dashboard** que extrai dos arquivos **CSV** os dados para plotar em um gráfico.
 
 ---
 
@@ -35,6 +35,7 @@ Este projeto surge como uma solução de baixo custo, escalável e replicável, 
 .
 ├── Coletor/
 │ ├── Coletor.py
+| ├── Dashboard.py
 | ├── installer.sh
 | └── requirements.txt
 ├── Monitoramento/
@@ -58,10 +59,12 @@ Este projeto surge como uma solução de baixo custo, escalável e replicável, 
 - **Coleta por Json**
 - **Shell Script**
 - **Crontab para automação**
+- **Streamlit para dashboard web**
+- **Plotly para gráfico interativo**
 
 ## Como configurar todo o sistema
 
-Tudo o que é necessário saber, desde os materiais necessários, montagem dos componentes, escrita do código de cada sensor, código completo, até a instalação e execução do coletor, estão presentes no manual disponibilizado.
+Tudo o que é necessário saber, desde os materiais necessários, montagem dos componentes, escrita do código de cada sensor, código completo, até a instalação e execução do coletor e dashboard, estão presentes no manual disponibilizado.
 
 - 📘 [Baixar Manual](Docs/Manual_IC.pdf)
 
