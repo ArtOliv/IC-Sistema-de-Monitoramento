@@ -59,7 +59,7 @@ for i in range(TOTAL_LEITURAS):
             response.raise_for_status()
             json_data = response.json()
 
-            timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             for sensor in json_data["sensors"]:
                     data.append({
@@ -106,8 +106,32 @@ for i in range(TOTAL_LEITURAS):
 
     time.sleep(INTERVALO)
 
-# Salva a captura em um arquivo .csv
 df = pd.DataFrame(data)
 
+# Componentes de cada coluna do arquivo
+df["column"] = (
+    "sensor_id " + df["sensor_id"].astype(str) + 
+    " sensor_type " + df["sensor_type"] +
+    " unit " + df["unit"]
+)
+
+# Tabela pivot com timestamp como index e sensores como coluna
+df_pivot = df.pivot_table(
+    index = "timestamp",
+    columns = "column",
+    values = "value",
+    aggfunc = "first"
+)
+
+# Ordena as colunas pelo numero do sensor_id
+df_pivot = df_pivot.reindex(
+    sorted(df_pivot.columns, key=lambda x: int(x.split()[1])), 
+    axis=1
+)
+
+# Reseta o index para virar uma coluna
+df_pivot = df_pivot.reset_index()
+
+# Salva a captura em um arquivo .csv
 filename = BASE_DIR / f"leitura_{timestamp_inicio}.csv"
-df.to_csv(filename, index=False)
+df_pivot.to_csv(filename, index=False)
