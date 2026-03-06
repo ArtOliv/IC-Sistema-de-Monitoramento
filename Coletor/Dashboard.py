@@ -130,6 +130,17 @@ else: # Se não, valores capturados das leituras
 
     df_long = df_long.sort_values(["sensor", "timestamp"])
 
+unidades_leituras = colunas_filtradas["unidade"].unique() # Determina unidade para o eixo Y dinamicamente
+
+if media_ids:
+    unidades_media = meta_df[meta_df["id"].isin(media_ids)]["unidade"].unique()
+    unidades_leituras = unidades_media
+
+if len(unidades_leituras) == 1:
+    label_y = f"Leitura ({unidades_leituras[0]})"
+else:
+    label_y = "Leitura"
+
 if(df_long.empty):
     st.warning("Nenhum dado disponível para os filtros selecionados.")
 else:
@@ -141,7 +152,7 @@ else:
         markers=False,
         labels={
             "timestamp": "Data/Hora",
-            "valor": "Leitura",
+            "valor": label_y,
             "sensor": "Sensor"
         }
     )
